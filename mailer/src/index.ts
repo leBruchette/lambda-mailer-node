@@ -13,7 +13,6 @@ exports.handler = async (event: SNSEvent) => {
     });
 
     // populate email options
-    // recipient email address, json with single key 'email'
     const recipientEmail = event.Records[0].Sns.MessageAttributes['email'].Value
     const obfuscatedEmail = recipientEmail.replace(/(.{2}).+(@.+)/, '$1***$2')
     const mailOptions = {

@@ -1,7 +1,6 @@
 #!/bin/bash
 
 function deploy {
-  # Generate a version number based on a date timestamp so that it's unique
   mkdir -p zips &&\
   cd ../mailer/ && \
   # Run the npm commands to transpile the TypeScript to JavaScript
@@ -19,9 +18,6 @@ function deploy {
   zip -r ../../infra/zips/lambda.zip . && \
   cd .. && rm -rf dist &&\
   cd ../infra
-#  terraform plan -input=false -var -out=./tfplan
-#  terraform plan -input=false -var -out=./tfplan && \
-#  terraform apply -input=false ./tfplan
 }
 
 deploy
