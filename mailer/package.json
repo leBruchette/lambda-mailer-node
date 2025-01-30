@@ -1,0 +1,24 @@
+{
+  "name": "lambda-mailer-node",
+  "version": "1.0.0",
+  "main": "index.js",
+
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.1692.0",
+    "nodemailer": "^6.10.0",
+    "typescript": "^5.7.3"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.147",
+    "@types/nodemailer": "^6.4.17"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "description": ""
+}
