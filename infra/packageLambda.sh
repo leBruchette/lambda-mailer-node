@@ -1,6 +1,6 @@
 #!/bin/bash
 
-function deploy {
+function packageLambda {
   mkdir -p zips &&\
   cd ../mailer/ && \
   # Run the npm commands to transpile the TypeScript to JavaScript
@@ -20,4 +20,4 @@ function deploy {
   cd ../infra
 }
 
-deploy
+packageLambda

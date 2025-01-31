@@ -18,10 +18,10 @@ Instead, I have a lambda function triggered by an SNS event that emails the resu
 
 ### Provisioning
 
-1. Navigate to the `infra/` directory and run `deploy.sh`.  This will build a zip of the lambda function for use with terraform provisioning:
+1. Navigate to the `infra/` directory and run `packageLambda.sh`.  This will build a zip of the lambda function for use with terraform provisioning:
 
    ```sh
-   cd infra && ./deploy.sh
+   cd infra && ./packageLambda.sh
    ```
 
 2. Run terraform apply to provision the infrastructure, note the following variables:
