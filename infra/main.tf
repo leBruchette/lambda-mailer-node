@@ -114,3 +114,64 @@ resource "aws_sns_topic_subscription" "sns_to_lambda_emailer" {
   protocol  = "lambda"
   endpoint  = aws_lambda_function.mailer.arn
 }
+
+// Cognito Identity Pool to allow unauthenticated users to publish SNS messages
+resource "aws_cognito_identity_pool" "identity_pool" {
+  identity_pool_name               = "${local.function_name}-identity-pool"
+  allow_unauthenticated_identities = true
+}
+
+resource "aws_iam_role" "cognito_sns_publisher" {
+  name = "${local.function_name}-cognito-sns-publisher"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Principal = {
+          Federated = "cognito-identity.amazonaws.com"
+        }
+        Action = "sts:AssumeRoleWithWebIdentity"
+        Condition = {
+          "StringEquals" = {
+            "cognito-identity.amazonaws.com:aud" = aws_cognito_identity_pool.identity_pool.id
+          }
+          "ForAnyValue:StringLike" = {
+            "cognito-identity.amazonaws.com:amr" = ["unauthenticated", "authenticated"]
+          }
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_policy" "cognito_sns_publish_policy" {
+  name = "${local.function_name}-cognito-sns-publish-policy"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = "sns:Publish"
+        Resource = aws_sns_topic.request_by_email_topic.arn
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "sns_role_policy_attachment" {
+  role       = aws_iam_role.cognito_sns_publisher.name
+  policy_arn = aws_iam_policy.cognito_sns_publish_policy.arn
+}
+
+resource "aws_cognito_identity_pool_roles_attachment" "identity_pool_roles" {
+  identity_pool_id = aws_cognito_identity_pool.identity_pool.id
+
+  roles = {
+    unauthenticated   = aws_iam_role.cognito_sns_publisher.arn
+    authenticated     = aws_iam_role.cognito_sns_publisher.arn
+  }
+}
+
